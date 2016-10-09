@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -48,5 +49,27 @@
         android:ems="10"
         android:id="@+id/serverPort"
         android:inputType="number" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="@string/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/serverDialogCancel"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+
+        <Button
+            android:text="@string/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/serverDialogSave"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+    </LinearLayout>
 
 </LinearLayout>

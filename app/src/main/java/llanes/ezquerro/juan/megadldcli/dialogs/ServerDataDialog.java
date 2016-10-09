@@ -3,7 +3,6 @@ package llanes.ezquerro.juan.megadldcli.dialogs;
 
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,15 +28,15 @@ public class ServerDataDialog extends DialogFragment {
         final View dialog_view = getActivity().getLayoutInflater().inflate(R.layout.dialog_server_data, null);
 
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog serverDataDialog = new AlertDialog.Builder(getActivity())
+                .setView(dialog_view)
+                .setTitle(R.string.server_dialog_title)
+                .create();
 
-        // Set layout from xml
-        builder.setView(dialog_view);
-        builder.setTitle(R.string.server_dialog_title);
-
-        // Set action buttons
-        builder.setPositiveButton(R.string.save_button, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        // Buttons action
+        Button save = (Button) dialog_view.findViewById(R.id.serverDialogSave);
+        save.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 String serverName = ((EditText) dialog_view.findViewById(R.id.serverName)).getText().toString();
                 String serverIp = ((EditText) dialog_view.findViewById(R.id.serverIp)).getText().toString();
                 Integer serverPort = Integer.parseInt(
@@ -45,15 +45,19 @@ public class ServerDataDialog extends DialogFragment {
 
                 if (checkInput(serverName, serverIp, serverPort)) {
                     saveData(serverName, serverIp, serverPort);
+                    serverDataDialog.dismiss();
                 }
-            }
-        }).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
             }
         });
 
-        return builder.create();
+        Button cancel = (Button) dialog_view.findViewById(R.id.serverDialogCancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                serverDataDialog.cancel();
+            }
+        });
+
+        return serverDataDialog;
     }
 
     private boolean checkInput(String name, String ip, Integer port) {
