@@ -1,7 +1,9 @@
 package llanes.ezquerro.juan.megadldcli.tcp;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +16,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import llanes.ezquerro.juan.megadldcli.interfaces.ServerResponse;
+import llanes.ezquerro.juan.megadldcli.R;
 
 public class Client extends AsyncTask<Void, Void, JSONObject> {
     // used to send messages
@@ -25,13 +27,13 @@ public class Client extends AsyncTask<Void, Void, JSONObject> {
     private String ip;
     private Integer port;
     private String url;
-    private ServerResponse listener;
+    private Context mContext;
 
-    public Client(String ip, Integer port, String url, ServerResponse listener) {
+    public Client(String ip, Integer port, String url, Context context) {
         this.ip = ip;
         this.port = port;
         this.url = url;
-        this.listener = listener;
+        this.mContext = context;
     }
 
     private void sendMessage(String message) {
@@ -76,8 +78,12 @@ public class Client extends AsyncTask<Void, Void, JSONObject> {
 
     @Override
     protected void onPostExecute(JSONObject response) {
+        Integer userFeedback = R.string.error;
         try {
-            listener.serverFeedback(response.getBoolean("status"));
+            if (response.getBoolean("status")) {
+                userFeedback = R.string.url_accepted;
+            }
+            Toast.makeText(mContext, userFeedback, Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }

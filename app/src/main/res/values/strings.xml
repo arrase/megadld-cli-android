@@ -14,4 +14,5 @@
     <string name="error">Something went wrong..</string>
     <string name="url_accepted">The URL has been received by the server and the download should start now</string>
     <string name="confirm_delete">Confirm delete</string>
+    <string name="invalid_url">Invalid URL</string>
 </resources>

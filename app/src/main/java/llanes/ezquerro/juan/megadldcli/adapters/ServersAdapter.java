@@ -1,17 +1,22 @@
 package llanes.ezquerro.juan.megadldcli.adapters;
 
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+
 import llanes.ezquerro.juan.megadldcli.R;
 import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
+import llanes.ezquerro.juan.megadldcli.tcp.Client;
 
 public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.ViewHolder> {
     private Context mContext;
@@ -62,7 +67,16 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mContext, "Click!", Toast.LENGTH_SHORT).show();
+            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+            String url = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+
+            Matcher match_url = Patterns.WEB_URL.matcher(url);
+            if (!match_url.matches()) {
+                Toast.makeText(mContext, R.string.invalid_url, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Client client = new Client(ip.getText().toString(), port, url, mContext);
+            client.execute();
         }
 
         @Override
@@ -72,7 +86,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
             if (rows < 0) {
                 return false;
             }
-            Toast.makeText(mContext, "Deleted!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, name.getText() + " deleted!", Toast.LENGTH_SHORT).show();
             return true;
         }
     }
