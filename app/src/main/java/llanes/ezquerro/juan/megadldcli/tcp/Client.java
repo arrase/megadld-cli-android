@@ -80,12 +80,13 @@ public class Client extends AsyncTask<Void, Void, JSONObject> {
     protected void onPostExecute(JSONObject response) {
         Integer userFeedback = R.string.error;
         try {
-            if (response.getBoolean("status")) {
+            if (response != null && response.getBoolean("status")) {
                 userFeedback = R.string.url_accepted;
             }
-            Toast.makeText(mContext, userFeedback, Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Toast.makeText(mContext, userFeedback, Toast.LENGTH_SHORT).show();
     }
 }
