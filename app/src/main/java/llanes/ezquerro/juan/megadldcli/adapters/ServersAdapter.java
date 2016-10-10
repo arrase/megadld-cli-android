@@ -55,6 +55,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
         public TextView ip;
         public Integer port;
         public Integer id;
+        private Integer delete_counter = 0;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -67,6 +68,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
 
         @Override
         public void onClick(View v) {
+            delete_counter = 0; // For security, a click resets delete_counter
             ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             String url = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
 
@@ -81,6 +83,11 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
 
         @Override
         public boolean onLongClick(View v) {
+            if (delete_counter <= 0) {
+                delete_counter++;
+                Toast.makeText(mContext, R.string.confirm_delete, Toast.LENGTH_SHORT).show();
+            }
+
             ContentResolver cr = mContext.getContentResolver();
             Integer rows = cr.delete(ServersContentProvider.CONTENT_URI, "_ID=" + id.toString(), null);
             if (rows < 0) {
