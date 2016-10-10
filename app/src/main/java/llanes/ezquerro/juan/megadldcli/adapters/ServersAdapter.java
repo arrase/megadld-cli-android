@@ -1,6 +1,5 @@
 package llanes.ezquerro.juan.megadldcli.adapters;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
