@@ -12,7 +12,7 @@ public class ServerDB extends SQLiteOpenHelper {
     public static final String SERVERS_TABLE_NAME = "server";
     private static final String SERVERS_TABLE_CREATE =
             "CREATE TABLE " + SERVERS_TABLE_NAME + " (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "name TEXT, " +
                     "ip TEXT, " +
                     "port INTEGER);";

@@ -13,4 +13,10 @@
     tools:context="llanes.ezquerro.juan.megadldcli.MegadldCLIActivity"
     tools:showIn="@layout/activity_megadld_cli">
 
+    <android.support.v7.widget.RecyclerView
+    android:id="@+id/servers_list"
+    android:scrollbars="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+
 </RelativeLayout>

@@ -1,23 +1,44 @@
 package llanes.ezquerro.juan.megadldcli;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import llanes.ezquerro.juan.megadldcli.adapters.ServersAdapter;
 import llanes.ezquerro.juan.megadldcli.dialogs.ServerDataDialog;
+import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
 
 public class MegadldCLIActivity extends AppCompatActivity {
+    private Cursor serverTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_megadld_cli);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        String[] projection = new String[]{
+                ServersContentProvider.Server._ID,
+                ServersContentProvider.Server.NAME,
+                ServersContentProvider.Server.IP,
+                ServersContentProvider.Server.PORT};
+
+        serverTable = getContentResolver().query(
+                ServersContentProvider.CONTENT_URI, projection, null, null, null
+        );
+
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.servers_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(new ServersAdapter(serverTable));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,5 +70,11 @@ public class MegadldCLIActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        serverTable.close();
     }
 }

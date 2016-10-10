@@ -2,8 +2,8 @@ package llanes.ezquerro.juan.megadldcli.dialogs;
 
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 
 import llanes.ezquerro.juan.megadldcli.R;
-import llanes.ezquerro.juan.megadldcli.database.ServerDB;
+import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
 
 public class ServerDataDialog extends DialogFragment {
 
@@ -93,10 +93,8 @@ public class ServerDataDialog extends DialogFragment {
         fields.put("ip", ip);
         fields.put("port", port);
 
-        ServerDB db_conn = new ServerDB(getContext());
-        SQLiteDatabase db_writer = db_conn.getWritableDatabase();
-        db_writer.insert(ServerDB.SERVERS_TABLE_NAME, null, fields);
-        db_writer.close();
-        db_conn.close();
+        ContentResolver cr =  getContext().getContentResolver();
+
+        cr.insert(ServersContentProvider.CONTENT_URI, fields);
     }
 }
