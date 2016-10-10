@@ -1,22 +1,17 @@
 package llanes.ezquerro.juan.megadldcli.adapters;
 
-import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.regex.Matcher;
-
 import llanes.ezquerro.juan.megadldcli.R;
 import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
-import llanes.ezquerro.juan.megadldcli.tcp.Client;
 
 public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.ViewHolder> {
     private Context mContext;
@@ -50,7 +45,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
         );
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         public TextView name;
         public TextView ip;
         public Integer port;
@@ -62,23 +57,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
             name = (TextView) itemView.findViewById(R.id.serverItemName);
             ip = (TextView) itemView.findViewById(R.id.serverItemIp);
 
-            itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            delete_counter = 0; // For security, a click resets delete_counter
-            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-            String url = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
-
-            Matcher match_url = Patterns.WEB_URL.matcher(url);
-            if (!match_url.matches()) {
-                Toast.makeText(mContext, R.string.invalid_url, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Client client = new Client(ip.getText().toString(), port, url, mContext);
-            client.execute();
         }
 
         @Override
