@@ -86,6 +86,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
             if (delete_counter <= 0) {
                 delete_counter++;
                 Toast.makeText(mContext, R.string.confirm_delete, Toast.LENGTH_SHORT).show();
+                return false;
             }
 
             ContentResolver cr = mContext.getContentResolver();
@@ -93,6 +94,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
             if (rows < 0) {
                 return false;
             }
+
             Toast.makeText(mContext, name.getText() + " deleted!", Toast.LENGTH_SHORT).show();
             return true;
         }
