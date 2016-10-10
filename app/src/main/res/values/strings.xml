@@ -10,4 +10,8 @@
     <string name="server_port">Port</string>
     <string name="cancel_button">Cancel</string>
     <string name="save_button">Save</string>
+    <string name="delete_button">Delete</string>
+    <string name="error">Something went wrong..</string>
+    <string name="url_accepted">The URL has been received by the server and the download should start now</string>
+    <string name="confirm_delete">Confirm delete</string>
 </resources>
