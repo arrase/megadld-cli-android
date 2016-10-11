@@ -2,7 +2,6 @@ package llanes.ezquerro.juan.megadldcli;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +30,9 @@ public class MegadldCLIActivity extends AppCompatActivity implements ServerRespo
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        if (intent.getAction() == Intent.ACTION_VIEW) {
-            Uri url = intent.getData();
-            Toast.makeText(this, url.toString(), Toast.LENGTH_SHORT).show();
+        if (intent.getAction() == Intent.ACTION_SEND) {
+            String url = intent.getStringExtra(Intent.EXTRA_TEXT);
+            Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
         }
 
         String[] projection = new String[]{

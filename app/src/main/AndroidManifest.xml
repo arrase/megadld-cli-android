@@ -18,17 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
+                <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:scheme="http"
-                    android:host="mega.co.nz" />
-                <data
-                    android:scheme="http"
-                    android:host="mega.nz" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <provider
