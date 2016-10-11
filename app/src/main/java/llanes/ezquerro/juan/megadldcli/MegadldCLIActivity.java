@@ -15,10 +15,9 @@ import android.widget.Toast;
 
 import llanes.ezquerro.juan.megadldcli.adapters.ServersAdapter;
 import llanes.ezquerro.juan.megadldcli.dialogs.ServerDataDialog;
-import llanes.ezquerro.juan.megadldcli.interfaces.ServerResponse;
 import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
 
-public class MegadldCLIActivity extends AppCompatActivity implements ServerResponse {
+public class MegadldCLIActivity extends AppCompatActivity {
     private Cursor serverTable;
 
     @Override
@@ -85,14 +84,5 @@ public class MegadldCLIActivity extends AppCompatActivity implements ServerRespo
     protected void onDestroy() {
         super.onDestroy();
         serverTable.close();
-    }
-
-    @Override
-    public void serverFeedback(boolean status) {
-        String message = getResources().getString(R.string.error);
-        if (status) {
-            message = getResources().getString(R.string.url_accepted);
-        }
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -93,7 +93,7 @@ public class ServerDataDialog extends DialogFragment {
         fields.put("ip", ip);
         fields.put("port", port);
 
-        ContentResolver cr =  getContext().getContentResolver();
+        ContentResolver cr = getContext().getContentResolver();
 
         cr.insert(ServersContentProvider.CONTENT_URI, fields);
     }

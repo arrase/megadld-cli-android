@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class ServerDB extends SQLiteOpenHelper {
 
+    public static final String SERVERS_TABLE_NAME = "server";
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "megadld";
-    public static final String SERVERS_TABLE_NAME = "server";
     private static final String SERVERS_TABLE_CREATE =
             "CREATE TABLE " + SERVERS_TABLE_NAME + " (" +
                     "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +

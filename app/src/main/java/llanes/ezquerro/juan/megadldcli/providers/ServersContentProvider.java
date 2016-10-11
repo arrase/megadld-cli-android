@@ -14,13 +14,9 @@ import llanes.ezquerro.juan.megadldcli.database.ServerDB;
 
 
 public class ServersContentProvider extends ContentProvider {
-    private ServerDB mServerDB;
-
     private static final String AUTH = "llanes.ezquerro.juan.megadldcli.providers";
-
     public static final Uri CONTENT_URI =
             Uri.parse("content://" + AUTH + "/servers");
-
     //UriMatcher
     private static final int SERVERS = 1;
     private static final int SERVER_ID = 2;
@@ -33,16 +29,7 @@ public class ServersContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTH, "servers/#", SERVER_ID);
     }
 
-    public static final class Server implements BaseColumns {
-        private Server() {
-        }
-
-        //Nombres de columnas
-        public static final String NAME = "name";
-        public static final String IP = "ip";
-        public static final String PORT = "port";
-    }
-
+    private ServerDB mServerDB;
 
     @Override
     public boolean onCreate() {
@@ -110,5 +97,15 @@ public class ServersContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
+    }
+
+    public static final class Server implements BaseColumns {
+        //Nombres de columnas
+        public static final String NAME = "name";
+        public static final String IP = "ip";
+        public static final String PORT = "port";
+
+        private Server() {
+        }
     }
 }
