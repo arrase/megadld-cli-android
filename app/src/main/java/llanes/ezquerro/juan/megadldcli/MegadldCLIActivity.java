@@ -31,7 +31,9 @@ public class MegadldCLIActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // What we do onLongClick
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        // Setup app for share or manage
         Intent intent = getIntent();
         onServerClick mOnServerClick;
 
@@ -44,7 +46,17 @@ public class MegadldCLIActivity extends AppCompatActivity {
             };
 
             mOnServerClick.URL = intent.getStringExtra(Intent.EXTRA_TEXT);
-        } else { // Delete server item
+
+            fab.hide();
+        } else { // Manage servers
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ServerDataDialog dialog = new ServerDataDialog();
+                    dialog.show(getSupportFragmentManager(), "ServerDataDialog");
+                }
+            });
+
             mOnServerClick = new onServerClick() {
                 @Override
                 public void run(Integer id, String ip, Integer port, Context context) {
@@ -73,15 +85,6 @@ public class MegadldCLIActivity extends AppCompatActivity {
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.servers_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ServersAdapter(this, serverTable, mOnServerClick));
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ServerDataDialog dialog = new ServerDataDialog();
-                dialog.show(getSupportFragmentManager(), "ServerDataDialog");
-            }
-        });
     }
 
     @Override
