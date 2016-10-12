@@ -19,6 +19,7 @@ import llanes.ezquerro.juan.megadldcli.adapters.ServersAdapter;
 import llanes.ezquerro.juan.megadldcli.click_actions.onServerClick;
 import llanes.ezquerro.juan.megadldcli.dialogs.ServerDataDialog;
 import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
+import llanes.ezquerro.juan.megadldcli.tcp.Client;
 
 public class MegadldCLIActivity extends AppCompatActivity {
     private Cursor serverTable;
@@ -37,17 +38,19 @@ public class MegadldCLIActivity extends AppCompatActivity {
         Intent intent = getIntent();
         onServerClick mOnServerClick;
 
-        if (intent.getAction() == Intent.ACTION_SEND) { // Send url to server
+        if (intent.getAction().equals(Intent.ACTION_SEND)) { // Send url to server
             mOnServerClick = new onServerClick() {
                 @Override
                 public void run(Integer id, String ip, Integer port, Context context) {
-                    Toast.makeText(context, URL, Toast.LENGTH_SHORT).show();
+                    Client client = new Client(ip, port, URL, context);
+                    client.execute();
                 }
             };
-
             mOnServerClick.URL = intent.getStringExtra(Intent.EXTRA_TEXT);
 
             fab.hide();
+            Toast.makeText(this, R.string.longclick_for_send, Toast.LENGTH_SHORT).show();
+
         } else { // Manage servers
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
