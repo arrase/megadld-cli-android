@@ -48,8 +48,13 @@ public class MegadldCLIActivity extends AppCompatActivity {
             mOnServerClick = new onServerClick() {
                 @Override
                 public void run(Integer id, String ip, Integer port, Context context) {
-                    ContentResolver cr = context.getContentResolver();
-                    cr.delete(ServersContentProvider.CONTENT_URI, "_ID=" + id.toString(), null);
+                    if (COUNTER <= 0) {
+                        COUNTER++;
+                        Toast.makeText(context, R.string.confirm_delete, Toast.LENGTH_SHORT).show();
+                    } else {
+                        ContentResolver cr = context.getContentResolver();
+                        cr.delete(ServersContentProvider.CONTENT_URI, "_ID=" + id.toString(), null);
+                    }
                 }
             };
         }
