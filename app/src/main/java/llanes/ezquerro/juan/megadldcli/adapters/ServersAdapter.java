@@ -1,6 +1,5 @@
 package llanes.ezquerro.juan.megadldcli.adapters;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
@@ -8,17 +7,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import llanes.ezquerro.juan.megadldcli.R;
+import llanes.ezquerro.juan.megadldcli.click_actions.onServerClick;
 import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
 
 public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.ViewHolder> {
     private Context mContext;
+    private onServerClick mOnServerClick;
 
-    public ServersAdapter(Context context, Cursor cursor) {
+    public ServersAdapter(Context context, Cursor cursor, onServerClick onServerClick) {
         super(cursor);
         mContext = context;
+        mOnServerClick = onServerClick;
     }
 
     @Override
@@ -35,6 +36,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         viewHolder.port = cursor.getInt(cursor.getColumnIndex(ServersContentProvider.Server.PORT));
         viewHolder.id = cursor.getInt(cursor.getColumnIndex(ServersContentProvider.Server._ID));
+        viewHolder.onServerClick = mOnServerClick;
 
         viewHolder.name.setText(
                 cursor.getString(cursor.getColumnIndex(ServersContentProvider.Server.NAME))
@@ -46,13 +48,13 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-        public TextView name;
-        public TextView ip;
-        public Integer port;
-        public Integer id;
-        private Integer delete_counter = 0;
+        TextView name;
+        TextView ip;
+        Integer port;
+        Integer id;
+        onServerClick onServerClick;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.serverItemName);
             ip = (TextView) itemView.findViewById(R.id.serverItemIp);
@@ -62,19 +64,7 @@ public class ServersAdapter extends CursorRecyclerViewAdapter<ServersAdapter.Vie
 
         @Override
         public boolean onLongClick(View v) {
-            if (delete_counter <= 0) {
-                delete_counter++;
-                Toast.makeText(mContext, R.string.confirm_delete, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            ContentResolver cr = mContext.getContentResolver();
-            Integer rows = cr.delete(ServersContentProvider.CONTENT_URI, "_ID=" + id.toString(), null);
-            if (rows < 0) {
-                return false;
-            }
-
-            Toast.makeText(mContext, name.getText() + " deleted!", Toast.LENGTH_SHORT).show();
+            onServerClick.run(id, ip.getText().toString(), port, mContext);
             return true;
         }
     }

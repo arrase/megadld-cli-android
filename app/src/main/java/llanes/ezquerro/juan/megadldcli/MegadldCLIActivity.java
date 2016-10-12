@@ -1,5 +1,7 @@
 package llanes.ezquerro.juan.megadldcli;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import llanes.ezquerro.juan.megadldcli.adapters.ServersAdapter;
+import llanes.ezquerro.juan.megadldcli.click_actions.onServerClick;
 import llanes.ezquerro.juan.megadldcli.dialogs.ServerDataDialog;
 import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
 
@@ -28,12 +31,30 @@ public class MegadldCLIActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // What we do onLongClick
         Intent intent = getIntent();
-        if (intent.getAction() == Intent.ACTION_SEND) {
-            String url = intent.getStringExtra(Intent.EXTRA_TEXT);
-            Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+        onServerClick mOnServerClick;
+
+        if (intent.getAction() == Intent.ACTION_SEND) { // Send url to server
+            mOnServerClick = new onServerClick() {
+                @Override
+                public void run(Integer id, String ip, Integer port, Context context) {
+                    Toast.makeText(context, URL, Toast.LENGTH_SHORT).show();
+                }
+            };
+
+            mOnServerClick.URL = intent.getStringExtra(Intent.EXTRA_TEXT);
+        } else { // Delete server item
+            mOnServerClick = new onServerClick() {
+                @Override
+                public void run(Integer id, String ip, Integer port, Context context) {
+                    ContentResolver cr = context.getContentResolver();
+                    cr.delete(ServersContentProvider.CONTENT_URI, "_ID=" + id.toString(), null);
+                }
+            };
         }
 
+        // Fill view
         String[] projection = new String[]{
                 ServersContentProvider.Server._ID,
                 ServersContentProvider.Server.NAME,
@@ -46,7 +67,7 @@ public class MegadldCLIActivity extends AppCompatActivity {
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.servers_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new ServersAdapter(this, serverTable));
+        mRecyclerView.setAdapter(new ServersAdapter(this, serverTable, mOnServerClick));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
