@@ -3,6 +3,7 @@ package llanes.ezquerro.juan.megadldcli.providers;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,10 +31,12 @@ public class ServersContentProvider extends ContentProvider {
     }
 
     private ServerDB mServerDB;
+    private Context mContext;
 
     @Override
     public boolean onCreate() {
-        mServerDB = new ServerDB(getContext());
+        mContext = getContext();
+        mServerDB = new ServerDB(mContext);
         return true;
     }
 
@@ -76,6 +79,8 @@ public class ServersContentProvider extends ContentProvider {
 
         regId = db.insert(ServerDB.SERVERS_TABLE_NAME, null, values);
 
+        mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+
         return ContentUris.withAppendedId(CONTENT_URI, regId);
     }
 
@@ -90,7 +95,11 @@ public class ServersContentProvider extends ContentProvider {
 
         SQLiteDatabase db = mServerDB.getWritableDatabase();
 
-        return db.delete(ServerDB.SERVERS_TABLE_NAME, where, selectionArgs);
+        Integer rows = db.delete(ServerDB.SERVERS_TABLE_NAME, where, selectionArgs);
+
+        mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+
+        return rows;
 
     }
 

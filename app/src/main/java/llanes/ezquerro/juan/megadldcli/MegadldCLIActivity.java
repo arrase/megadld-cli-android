@@ -3,8 +3,9 @@ package llanes.ezquerro.juan.megadldcli;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +23,29 @@ import llanes.ezquerro.juan.megadldcli.providers.ServersContentProvider;
 import llanes.ezquerro.juan.megadldcli.tcp.Client;
 
 public class MegadldCLIActivity extends AppCompatActivity {
-    private Cursor serverTable;
+    private ServersAdapter mServers;
+    private ServersObserver mServersObserver;
+    private ContentResolver mCR;
+    private String[] mProjection = new String[]{
+            ServersContentProvider.Server._ID,
+            ServersContentProvider.Server.NAME,
+            ServersContentProvider.Server.IP,
+            ServersContentProvider.Server.PORT};
+
+    class ServersObserver extends ContentObserver {
+        public ServersObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            // New data
+            mServers.changeCursor(mCR.query(
+                    ServersContentProvider.CONTENT_URI, mProjection, null, null, null
+            ));
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +56,8 @@ public class MegadldCLIActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        mCR = getContentResolver();
 
         // Setup app for share or manage
         Intent intent = getIntent();
@@ -74,21 +99,23 @@ public class MegadldCLIActivity extends AppCompatActivity {
             };
         }
 
+        // View adapter
+        mServers = new ServersAdapter(
+                this,
+                mCR.query(
+                        ServersContentProvider.CONTENT_URI, mProjection, null, null, null
+                ),
+                mOnServerClick);
+
+        mServersObserver = new ServersObserver(new Handler());
+        mCR.registerContentObserver(ServersContentProvider.CONTENT_URI, true, mServersObserver);
+
         // Fill view
-        String[] projection = new String[]{
-                ServersContentProvider.Server._ID,
-                ServersContentProvider.Server.NAME,
-                ServersContentProvider.Server.IP,
-                ServersContentProvider.Server.PORT};
-
-        serverTable = getContentResolver().query(
-                ServersContentProvider.CONTENT_URI, projection, null, null, null
-        );
-
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.servers_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new ServersAdapter(this, serverTable, mOnServerClick));
+        mRecyclerView.setAdapter(mServers);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,6 +142,7 @@ public class MegadldCLIActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        serverTable.close();
+        mCR.unregisterContentObserver(mServersObserver);
+        mServers.closeCursor();
     }
 }
